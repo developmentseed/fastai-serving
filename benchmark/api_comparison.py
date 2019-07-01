@@ -33,6 +33,8 @@ def api_batch_predict(payload):
     # batch predict, dummy labels for the second argument
     dummy_labels = torch.zeros(len(tensors))
     tensor_stack = torch.stack(tensors)
+    if torch.cuda.is_available():
+        tensor_stack = tensor_stack.cuda()
     learner.pred_batch(batch=(tensor_stack, dummy_labels))
 
 def api_iterate_predict(payload):
