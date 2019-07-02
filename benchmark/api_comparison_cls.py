@@ -9,7 +9,7 @@ from fastai.vision import load_learner, open_image, pil2tensor
 import numpy as np
 import torch
 
-learner = load_learner('fixtures')
+learner = load_learner('fixtures/classification')
 
 
 num_image = int(sys.argv[1])
