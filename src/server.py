@@ -14,6 +14,18 @@ from starlette.responses import JSONResponse
 from PIL import Image
 import numpy as np
 
+# TODO: improve this hack
+# This is used for making additional functions available prior to loading the model.
+# For example, you may need a non-fastai defined metric like IOU. You can add that
+# function to a utils.py script in a utils folder along with `__init__.py`. Then mount with
+# `docker run --rm -p 8501:8501 -v $PWD/model_dir:/workdir/model -v $PWD/utils:/workdir/utils -t fastai/serving`
+try:
+    from utils.utils import *
+    print('loading additional functions from mounted utils directory')
+except ModuleNotFoundError as e:
+    print('no utils file found, proceeding normally')
+
+
 app = Starlette()
 app.add_middleware(CORSMiddleware, allow_origins=['*'], allow_headers=['X-Requested-With', 'Content-Type'])
 
@@ -34,16 +46,17 @@ async def analyze(request):
     # convert from image bytes to images to tensors
     img_bytes = [b64decode(inst['image_bytes']['b64']) for inst in instances]
     tensors = [pil2tensor(Image.open(BytesIO(byts)), dtype=np.float32).div_(255) for byts in img_bytes]
+    tfm_tensors = [learner.data.valid_dl.tfms[0]((tensor, torch.zeros(0)))[0] for tensor in tensors]
 
     # batch predict, dummy labels for the second argument
-    dummy_labels = torch.zeros(len(tensors))
-    tensor_stack = torch.stack(tensors)
+    dummy_labels = torch.zeros(len(tfm_tensors))
+    tensor_stack = torch.stack(tfm_tensors)
     if torch.cuda.is_available():
         tensor_stack = tensor_stack.cuda()
-    prediction = learner.pred_batch(batch=(tensor_stack, dummy_labels))
+    pred_tensor = learner.pred_batch(batch=(tensor_stack, dummy_labels))
 
     # find the maximum value along the prediction axis
-    classes = np.argmax(np.array(prediction), axis=1)
+    classes = np.argmax(np.array(pred_tensor), axis=1)
     return JSONResponse(dict(predictions=classes.tolist()))
 
 
