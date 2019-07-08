@@ -6,6 +6,6 @@ WORKDIR /workdir
 
 EXPOSE 8501
 
-COPY src /workdir/src
+COPY src /workdir/
 
-ENTRYPOINT ["python3.7", "src/server.py", "serve"]
+ENTRYPOINT ["python3.7", "server.py", "serve"]
