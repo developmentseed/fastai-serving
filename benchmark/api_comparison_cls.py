@@ -37,6 +37,19 @@ def api_batch_predict(payload):
         tensor_stack = tensor_stack.cuda()
     learner.pred_batch(batch=(tensor_stack, dummy_labels))
 
+def api_batch_tfm_predict(payload):
+    instances = json.loads(payload)['instances']
+    img_bytes = [b64decode(inst['image_bytes']['b64']) for inst in instances]
+    tensors = [pil2tensor(Image.open(BytesIO(byts)), dtype=np.float32).div_(255) for byts in img_bytes]
+    tfm_tensors = [learner.data.valid_dl.tfms[0]((tensor, torch.zeros(0)))[0] for tensor in tensors]
+
+    # batch predict, dummy labels for the second argument
+    dummy_labels = torch.zeros(len(tfm_tensors))
+    tensor_stack = torch.stack(tfm_tensors)
+    if torch.cuda.is_available():
+        tensor_stack = tensor_stack.cuda()
+    learner.pred_batch(batch=(tensor_stack, dummy_labels))
+
 def api_iterate_predict(payload):
     instances = json.loads(payload)['instances']
     img_bytes = [b64decode(inst['image_bytes']['b64']) for inst in instances]
@@ -56,4 +69,10 @@ t1 = time.time()
 api_batch_predict(payload)
 t2 = time.time()
 print('Batch')
+print(f'{t2 - t1} seconds, {(t2 - t1) / num_image} per image')
+
+t1 = time.time()
+api_batch_tfm_predict(payload)
+t2 = time.time()
+print('Batch w/transform')
 print(f'{t2 - t1} seconds, {(t2 - t1) / num_image} per image')
