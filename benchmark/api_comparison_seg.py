@@ -44,7 +44,6 @@ def api_batch_tfm_predict(payload):
     tensors = [pil2tensor(Image.open(BytesIO(byts)), dtype=np.float32).div_(255) for byts in img_bytes]
     tfm_tensors = [learner.data.valid_dl.tfms[0]((tensor, torch.zeros(0)))[0] for tensor in tensors]
 
-
     # batch predict, dummy labels for the second argument
     dummy_labels = torch.zeros(len(tfm_tensors))
     tensor_stack = torch.stack(tfm_tensors)
@@ -60,7 +59,7 @@ def api_iterate_predict(payload):
     predictions = []
     for byts in img_bytes:
         fimg = open_image(BytesIO(byts))
-        predictions.append(learner.predict(fimg))
+        predictions.append(learner.predict(fimg)[1])
     return predictions
 
 t1 = time.time()
@@ -80,7 +79,3 @@ batch_tfm_pred = api_batch_tfm_predict(payload)
 t2 = time.time()
 print('Batch w/transforms')
 print(f'{t2 - t1} seconds, {(t2 - t1) / num_image} per image')
-
-# test
-print('iter == batch?' , np.array_equal(np.array(iterate_pred[0][1]), batch_pred))
-print('iter == batch tfm?' , np.array_equal(np.array(iterate_pred[0][1]), batch_tfm_pred))
