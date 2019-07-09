@@ -20,6 +20,14 @@ GPU (`p2.xlarge`):
 | `.pred_batch` | 0.0061 |
 | `.pred_batch` + `apply_tfms` | 0.0073 |
 
+GPU (`p3.2xlarge`):
+
+| Method | ~ sec/image |
+| --- | --- |
+| `.predict` iteration | 0.013 |
+| `.pred_batch` | 0.0034 |
+| `.pred_batch` + `apply_tfms` | 0.0038 |
+
 ## Segmentation
 CPU:
 
@@ -36,3 +44,11 @@ GPU (`p2.xlarge`):
 | `.predict` iteration | 0.45 |
 | `.pred_batch` | 0.29 |
 | `.pred_batch` + `apply_tfms` | 0.29 |
+
+GPU (`p3.2xlarge`):
+
+| Method | ~ sec/image |
+| --- | --- |
+| `.predict` iteration | 0.048 |
+| `.pred_batch` | 0.032 |
+| `.pred_batch` + `apply_tfms` | 0.033 |
