@@ -17,8 +17,9 @@ import numpy as np
 # TODO: improve this hack
 # This is used for making additional functions available prior to loading the model.
 # For example, you may need a non-fastai defined metric like IOU. You can add that
-# function to a utils.py script in a utils folder along with `__init__.py`. Then mount with
-# `docker run --rm -p 8501:8501 -v $PWD/model_dir:/workdir/model -v $PWD/utils:/workdir/utils -t fastai/serving`
+# function to a utils.py script in a utils folder along with `__init__.py`. Then build with
+# docker build --build-arg MODEL_DIR=./model_dir --build-arg UTILS_DIR=./utils -t org/image:tag .`
+
 try:
     from utils.utils import *
     print('loading additional functions from mounted utils directory')
@@ -59,6 +60,9 @@ async def analyze(request):
     classes = np.argmax(np.array(pred_tensor), axis=1)
     return JSONResponse(dict(predictions=classes.tolist()))
 
+@app.route('/analyze', methods=['GET'])
+def status(request):
+    return JSONResponse(dict(status='OK'))
 
 if __name__ == '__main__':
     if 'serve' in sys.argv:
