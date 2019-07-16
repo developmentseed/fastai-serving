@@ -1,6 +1,6 @@
 # Fast.ai serving
 
-A Docker image for serving [fast.ai](https://www.fast.ai/) models, mimicking the API of [Tensorflow Serving](https://github.com/tensorflow/serving).  It is designed for running batch inference at scale. It is not optimized for performance (but it's not [that slow](benchmarks)).
+A Docker image for serving [fast.ai](https://www.fast.ai/) models, mimicking the API of [Tensorflow Serving](https://github.com/tensorflow/serving).  It is designed for running batch inference at scale. It is not optimized for performance (but it's not [that slow](benchmark)).
 
 ## Build
 
