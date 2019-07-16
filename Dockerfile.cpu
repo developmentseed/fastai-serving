@@ -8,4 +8,11 @@ EXPOSE 8501
 
 COPY src /workdir/
 
+RUN echo "cache bust"
+ARG MODEL_DIR
+ARG UTILS_DIR
+RUN echo $MODEL_DIR
+COPY $MODEL_DIR /workdir/model
+COPY $UTILS_DIR /workdir/utils
+
 ENTRYPOINT ["python3.7", "server.py", "serve"]
