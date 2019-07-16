@@ -60,4 +60,4 @@ Returns an HTTP Status of `200` as long as the API is running (health check).
 ## Acknowledgments
 
 - The code for `server.py` is taken almost entirely from the [fast.ai example](https://github.com/render-examples/fastai-v3) for [Render](https://render.com/). The primary addition is the batch inference code which can provide significant speed-ups compared to single image prediction.
-- This work was undertaken in conjunction with [Sinergise](https://www.sinergise.com/) and funded by the [European Space Agency](https://www.esa.int/ESA), specifically [Phi Lab](http://blogs.esa.int/philab/)
+- This work was undertaken in partnership with our friends at [Sinergise](https://www.sinergise.com/) and funded by the [European Space Agency](https://www.esa.int/ESA), specifically [Phi Lab](http://blogs.esa.int/philab/)
