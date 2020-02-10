@@ -1,6 +1,6 @@
 FROM pytorch/pytorch:1.0.1-cuda10.0-cudnn7-runtime
 
-RUN pip install torchvision==0.2.2 pillow fastai aiohttp asyncio uvicorn starlette
+RUN pip install torchvision==0.2.2 pillow==6.1 fastai aiohttp asyncio uvicorn starlette
 
 WORKDIR /workdir
 
